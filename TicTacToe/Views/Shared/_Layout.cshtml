@@ -1,0 +1,96 @@
+﻿@using TicTacToe.Models.Library
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - #Jogo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="~/lib/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/lib/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/lib/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/lib/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/lib/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/lib/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/lib/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/lib/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/lib/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/lib/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/lib/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/lib/favicon/favicon-16x16.png">
+</head>
+<body class="mainContainer">
+
+    <header>
+        <div class="row">
+            <div class="logo col-9">
+                <img src="~/lib/img/logo.png" /> Jogo
+            </div>
+            <div class="col-3">
+                @Html.ActionLink("Novo Jogo", "RestartJogo", "Jogo")
+            </div>
+        </div>
+    </header>
+
+    <div class="">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - TicTacToe - <a href="http://beandrielli.net" target="_blank">beandrielli</a>
+        </div>
+    </footer>
+
+
+    <!-- Modal de Mensagens -->
+    <div class="modal fade" id="modalMensagens" tabindex="-1" role="dialog" aria-labelledby="modalMensagensTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Jogadores</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <p id="paragrafoMensagem">@( (TempData[TempDatas.mensagemErro.ToString()] ?? string.Empty) )</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            showError();
+        });
+
+        function showError() {
+            var erro = "@( (TempData[TempDatas.mensagemErro.ToString()] ?? string.Empty) )";
+
+            if (erro.trim() != "") {
+                $('#modalMensagens').modal();
+            }
+        }
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

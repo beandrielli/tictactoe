@@ -1,0 +1,203 @@
+﻿@model TicTacToe.Models.Jogo
+
+<div class="row jogo-atual-container">
+    <div class="jogo-atual col-md-7 col-sm-12">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="game game-purple @(Model.Tabuleiro[0,0] == null ? "free" : (Model.Tabuleiro[0, 0] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis")) " data-row="0" data-column="0"></td>
+                    <td class="game game-blue  @(Model.Tabuleiro[0,1] == null ? "free" : (Model.Tabuleiro[0,1] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="0" data-column="1"></td>
+                    <td class="game game-purple  @(Model.Tabuleiro[0,2] == null ? "free" : (Model.Tabuleiro[0,2] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="0" data-column="2"></td>
+                </tr>
+                <tr>
+                    <td class="game game-blue  @(Model.Tabuleiro[1,0] == null ? "free" : (Model.Tabuleiro[1,0] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="1" data-column="0"></td>
+                    <td class="game game-purple  @(Model.Tabuleiro[1,1] == null ? "free" : (Model.Tabuleiro[1,1] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="1" data-column="1"></td>
+                    <td class="game game-blue  @(Model.Tabuleiro[1,2] == null ? "free" : (Model.Tabuleiro[1,2] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="1" data-column="2"></td>
+                </tr>
+                <tr>
+                    <td class="game game-purple  @(Model.Tabuleiro[2,0] == null ? "free" : (Model.Tabuleiro[2,0] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="2" data-column="0"></td>
+                    <td class="game game-blue  @(Model.Tabuleiro[2,1] == null ? "free" : (Model.Tabuleiro[2,1] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="2" data-column="1"></td>
+                    <td class="game game-purple  @(Model.Tabuleiro[2,2] == null ? "free" : (Model.Tabuleiro[2,2] == TicTacToe.Models.Library.Pecas.circulo ? "game-circulo" : "game-xis"))" data-row="2" data-column="2"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4 col-sm-8">
+        <table class="placar-geral text-center align-self-auto">
+            <thead>
+                <tr>
+                    <th class="jogador-circulo" data-quantidade="@(Model.PlacarGeral.Partidas.Count(jogador => jogador == TicTacToe.Models.Library.ResultadoPartida.jogadorCirculo || jogador == TicTacToe.Models.Library.ResultadoPartida.empate))">
+                        @Model.JogadorCirculo 
+                        <label id="vitoriascirculo"> (@(Model.PlacarGeral.Partidas.Count(jogador => jogador == TicTacToe.Models.Library.ResultadoPartida.jogadorCirculo || jogador == TicTacToe.Models.Library.ResultadoPartida.empate)))</label>
+</th>
+                    <th class="jogador-xis" data-quantidade="@(Model.PlacarGeral.Partidas.Count(jogador => jogador == TicTacToe.Models.Library.ResultadoPartida.jogadorXis || jogador == TicTacToe.Models.Library.ResultadoPartida.empate))">
+                        @Model.JogadorXis 
+                        <label id="vitoriasxis"> (@(Model.PlacarGeral.Partidas.Count(jogador => jogador == TicTacToe.Models.Library.ResultadoPartida.jogadorXis || jogador == TicTacToe.Models.Library.ResultadoPartida.empate)))</label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TicTacToe.Models.Library.ResultadoPartida resultado in Model.PlacarGeral.Partidas)
+                {
+                    <tr>
+                        <td class="circle-player @( (resultado == TicTacToe.Models.Library.ResultadoPartida.empate || resultado == TicTacToe.Models.Library.ResultadoPartida.jogadorCirculo) ? "winner" : "" )">
+                            @( (resultado == TicTacToe.Models.Library.ResultadoPartida.empate || resultado == TicTacToe.Models.Library.ResultadoPartida.jogadorCirculo) ? "0" : "" )
+                        </td>
+                        <td class="xis-player @( (resultado == TicTacToe.Models.Library.ResultadoPartida.empate || resultado == TicTacToe.Models.Library.ResultadoPartida.jogadorXis) ? "winner" : "" )">
+                            @( (resultado == TicTacToe.Models.Library.ResultadoPartida.empate || resultado == TicTacToe.Models.Library.ResultadoPartida.jogadorXis) ? "X" : "" )
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@Html.HiddenFor(model => model.Identificador, new { id = "id-sessao" })
+
+@section Scripts{ 
+    <script type="text/javascript">
+
+        var vezCirculo = @(Model.VezCirculo ? "true" : "false");
+        var requestAtivo = false;
+        var jogoFinalizado = false;
+
+
+        $(document).ready(function () {
+
+            $(".game").hover(
+                function () {
+                    if (!$(this).hasClass("free"))
+                        return;
+
+                    if (vezCirculo) {
+                        $(this).addClass("circulo-hover");
+                    }
+                    else {
+                        $(this).addClass("xis-hover");
+                    }
+                },
+                function () {
+                    $(this).removeClass("circulo-hover");
+                    $(this).removeClass("xis-hover");
+                }
+            );
+
+            $(".game").click(function () {
+                var coluna = $(this).data("column");
+                var linha = $(this).data("row");
+
+                if (!requestAtivo && $(this).hasClass("free") && !jogoFinalizado)
+                    jogada(linha, coluna, this);
+            });
+
+        });
+
+        function jogada(linha, coluna, elemento) {
+            requestAtivo = true;
+
+            var identificador = $("#id-sessao").val();
+
+            $.ajax({
+                type: "POST",
+                url: "@(Url.Action("RegistrarJogada", "Jogo"))",
+                data: { identificador: identificador, linha: linha, coluna: coluna },
+                success: function (result) {
+                    if (result.success) {
+
+                        if (vezCirculo) {
+                            vezCirculo = false;
+                            //$(elemento).text("O");
+                            $(elemento).addClass("game-circulo");
+                        }
+                        else {
+                            vezCirculo = true;
+                            //$(elemento).text("X");
+                            $(elemento).addClass("game-xis");
+                        }
+
+                        $(elemento).removeClass("free");
+
+                        if (result.winner != null && result.winner.trim() != "") {
+                            $("#paragrafoMensagem").text(result.winner);
+                            
+                            atualizarPlacar(result.result);
+
+                            jogoFinalizado = true;
+
+                            setTimeout(function () { $('#modalMensagens').modal(); jogoFinalizado = false; reniciarTabuleiro();}, 1000);
+                        }
+                    }
+                    else {
+                        alert("Erro inesperado");
+                    }
+                },
+                error: function (req, status, error) {
+                    alert("Exceção inesperada");
+                },
+                complete: function () {
+                    requestAtivo = false;
+                }
+            });
+
+            function atualizarPlacar(resultado) {
+
+                var novaLinha = "<tr>";
+                novaLinha += "<td class='circle-player "
+
+                if (resultado == "@(TicTacToe.Models.Library.ResultadoPartida.jogadorCirculo)" || resultado == "@(TicTacToe.Models.Library.ResultadoPartida.empate)") {
+                    novaLinha += "winner ' >";
+                    novaLinha += "0";
+                    atualizarContagemVitorias("circulo");
+                }
+                else {
+                    novaLinha += " ' >";
+                }
+
+                novaLinha += "</td>";
+                novaLinha += "<td class='xis-player ";
+
+                if (resultado == "@(TicTacToe.Models.Library.ResultadoPartida.jogadorXis)" || resultado == "@(TicTacToe.Models.Library.ResultadoPartida.empate)") {
+                    novaLinha += "winner ' >";
+                    novaLinha += "X";
+                    atualizarContagemVitorias("xis");
+                }
+                else {
+                    novaLinha += " ' >";
+                }
+
+                novaLinha += "</td>"
+                novaLinha += "</tr>";
+
+                $(".placar-geral tbody").append(novaLinha);
+
+            }
+
+            function reniciarTabuleiro() {
+                vezCirculo = true;
+
+                var casas = $(".game");
+
+                $.each(casas, function (index, casa) {
+                    if (!casa.className.includes("free")) {
+                        casa.className += " free";
+                        //casa.textContent = "";
+                        casa.classList.remove("game-xis");
+                        casa.classList.remove("game-circulo");
+                    }
+                });
+            }
+
+            function atualizarContagemVitorias(jogador) {
+                var vitorias = $(".jogador-" + jogador).data("quantidade");
+                var quantidadeVitorias = 1;
+                if (vitorias != null || vitorias.trim != "") {
+                    var quantidadeVitorias = parseInt(vitorias) + 1;
+                }
+                $("#vitorias" + jogador).text(" (" + quantidadeVitorias + ")");
+                $(".jogador-" + jogador).data("quantidade", quantidadeVitorias);
+            }
+
+        }
+
+    </script>
+}

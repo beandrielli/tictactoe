@@ -1,0 +1,46 @@
+﻿@model TicTacToe.Models.Jogo
+
+<div class="index-welcome">
+    <h1 class="display-4">Bem Vindo Ao #Jogo!</h1>
+    <div class="col-lg-12 text-center">
+        <p>Nostalgia de relembrar o que enchia as bordas dos cadernos, era rabiscado nas carteiras escolares e desenhado na lousa... Bora jogar!</p>
+        <img src="~/lib/img/logo.png" alt="Logo de um Jogo da Velha sorridente" title="#Jogo" class="align-self-center" />
+    </div>
+    <div class="col-xl-12">
+        <div class="btn-primary align-self-center col-4" data-toggle="modal" data-target="#modalNomes">
+            Jogar!
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de Nomes -->
+<div class="modal fade" id="modalNomes" tabindex="-1" role="dialog" aria-labelledby="modalNomesTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Jogadores</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("NovoJogo", "Jogo")) {
+            <div class="modal-body">
+                <div class="col-12">
+                    <p>-0-0-0-</p>
+                    @Html.TextBoxFor(model => model.JogadorCirculo)
+                </div>
+                <br />
+                <div class="col-12">
+                    <p>-X-X-X-</p>
+                    @Html.TextBoxFor(model => model.JogadorXis)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">#Jogar!</button>
+            </div>
+            }
+        </div>
+    </div>
+</div>
